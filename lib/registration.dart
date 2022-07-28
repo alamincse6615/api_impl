@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:api_impl/login.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:datetime_picker_formfield/datetime_picker_formfield.dart';
+import 'package:intl/intl.dart';
+
 
 
 class RegistrationPage extends StatefulWidget {
@@ -17,6 +20,12 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   String pickedDate = "Choose date";
+
+
+  String gender="";
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +33,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
         title: Text("Registration Page"),
       ),
       body: Center(
-        child: Column(
+        child: ListView(
 
           children: [
             Padding(
@@ -33,7 +42,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 controller: nameController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter Your Name'
+                 // hintText: 'Enter Your Name',
+                  label: Text('Enter Your Name *')
                 ),
               ),
             ),
@@ -43,7 +53,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 controller: emailController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter Your Email'
+                 // hintText: 'Enter Your Email',
+                    label: Text('Enter Your Email *')
                 ),
               ),
             ),
@@ -53,7 +64,8 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 controller: passwordController,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
-                  hintText: 'Enter Your Password'
+                  label: Text('Enter Your Password *',)
+
                 ),
               ),
             ),
@@ -61,27 +73,91 @@ class _RegistrationPageState extends State<RegistrationPage> {
 
             TextButton(onPressed: (){
 
-              DatePicker.showDatePicker(
-                context,
-                minTime: DateTime(2000,01,01),
-                maxTime: DateTime(2050,12,31),
-                theme: DatePickerTheme(
-                  headerColor: Colors.grey,
-                  backgroundColor: Colors.green,
+              // DatePicker.showDatePicker(
+              //   context,
+              //   minTime: DateTime(2000,01,01),
+              //   maxTime: DateTime(2050,12,31),
+              //   theme: DatePickerTheme(
+              //     headerColor: Colors.grey,
+              //     backgroundColor: Colors.green,
+              //
+              //   ),
+              //   onChanged: (date){
+              //     print(date);
+              //     pickedDate = date.toString();
+              //     setState(() {
+              //
+              //     });
+              //   }
+              //
+              // );
 
-                ),
-                onChanged: (date){
-                  print(date);
-                  pickedDate = date.toString();
-                  setState(() {
 
-                  });
-                }
-
-              );
+              _pickDateDialog();
 
 
             }, child: Text(pickedDate)),
+
+            Container(
+              height: 150,
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                children: [
+                  Row(
+                    children: [
+                      Radio(
+                        value: "Male",
+                        groupValue: gender,
+                        onChanged: (val){
+                          gender = val.toString();
+                          setState(() {
+
+                          });
+                        },
+                      ),
+                      Text("Male"),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio(
+                        value: "Female",
+                        groupValue: gender,
+                        onChanged: (val){
+                          gender = val.toString();
+                          setState(() {
+
+                          });
+                        },
+                      ),
+                      Text("Female"),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Radio(
+                        value: "Others",
+                        groupValue: gender,
+                        onChanged: (val){
+                          gender = val.toString();
+                          setState(() {
+
+                          });
+                        },
+                      ),
+                      Text("Others"),
+                    ],
+                  ),
+                ],
+              ),
+
+
+            ),
+
+
+            Text("Selected Gender:"+gender),
+
+
 
             ElevatedButton(onPressed: (){
               registration();
@@ -111,12 +187,37 @@ class _RegistrationPageState extends State<RegistrationPage> {
     "email":email,
     "password":password,
     "pickedDate":pickedDate,
+    "gender":gender,
     };
 
 
       print(jsonEncode(data));
       //jsonEncode(data);
 
+
+  }
+
+
+
+  _pickDateDialog() {
+
+    showDatePicker(
+        context: context,
+        firstDate: DateTime(1950),
+        lastDate: DateTime(2100),
+        initialEntryMode: DatePickerEntryMode.input,
+        initialDate: DateTime.now()
+    )
+        .then((chooseDate) {
+      if (chooseDate == null) {
+        return;
+      }
+      setState(() {
+        print(chooseDate);
+
+        pickedDate = DateFormat('yyyy-MMM-dd hh:mm:aa').format(chooseDate).toString();
+      });
+    });
 
   }
 }
